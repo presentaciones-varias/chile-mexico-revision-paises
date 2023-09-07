@@ -1,0 +1,224 @@
+---
+# title: "Capacitación en R y herramientas de productividad"
+# author: "Abril 2021"
+format:
+  revealjs:
+    auto-stretch: false
+    margin: 0
+    slide-number: true
+    scrollable: true
+    preview-links: auto
+    logo: imagenes/logo_portada2.png
+    css: ine_quarto_styles.css
+    # footer: <https://quarto.org>
+execute: 
+  echo: false
+  message: false
+---
+
+# 
+
+
+
+[]{.linea-superior} 
+[]{.linea-inferior} 
+
+
+
+<img src="imagenes/logo_portada2.png" width="20%"/>  
+
+[**Revisión de iniciativas de difusión**]{.big-par .center-justified}
+
+[**Proyecto de cooperación Chile-México**]{.big-par .center-justified}
+
+[**Septiembre 2023**]{.big-par .center-justified}
+
+
+## Objetivo del proyecto  
+
+**Componente 1**:
+
+Recopilación de experiencias de implementación de herramientas tecnológicas que **mejoren el acceso** a las estadísticas públicas y que contribuyan a la **visibilización de las desigualdades de género** y entre otras subpoblaciones especialmente vulnerables. 
+
+. . . 
+
+<br/>
+<br/>
+
+[**Experiencias de difusión de datos en ONEs**]{.center .medium-par}
+
+
+
+
+## Países revisados
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(DT)
+paises <-  read_excel("data/distribucion_paises.xlsx", sheet = "ficha")
+
+paises %>% 
+  select(pais, `nombre iniciativa` =  nombre_iniciativa) %>% 
+  datatable(   rownames = FALSE,
+              options = list(pageLength = 5, 
+                             info = F,
+                             searching = FALSE,
+                             dom = "rtip",
+                               headerCallback = DT::JS(
+    "function(thead) {",
+    "  $(thead).css('font-size', '0.7em');",
+    "}"
+  )
+                             )) %>% 
+  DT::formatStyle(columns = c(1, 2), fontSize = '60%',  backgroundSize = '2%')
+```
+
+. . .
+
+```{r}
+library(kableExtra)
+
+# Se resta uno porque Ricardo revisó una organización de Naciones Unidas
+n_países <-  length(unique(paises$pais)) - 1
+n_iniciativas <- nrow(paises)
+
+tibble(`cantidad de países` = n_países, `cantidad de iniciativas` =  n_iniciativas) %>% 
+  kbl()
+
+
+```
+
+## Creamos una tipología
+
+
+::: {.panel-tabset}
+
+### [categorías]{.medium-par}
+
+
+
+::: {.incremental .medium-par}
+- API
+
+- Dashboard
+
+- Tabulados
+
+- Mapas
+
+- *Data story telling*
+
+- Catálogo
+
+- Otros
+:::
+
+
+### [gráfico]{.medium-par}
+
+```{r}
+library(ggplot2)
+library(plotly)
+plot <- paises %>% 
+  group_by(tipo_acceso) %>% 
+  summarise(frecuencia = n()) %>% 
+  filter(!is.na(tipo_acceso)) %>% 
+  rename(`tipo de acceso` = tipo_acceso) %>% 
+  ggplot(aes(x = `tipo de acceso`, y = frecuencia, fill = `tipo de acceso`)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(legend.position = "none")
+
+ggplotly(plot, tooltip = c("x", "y"))
+
+```
+
+:::
+
+## Zoom a experiencias de mapas
+
+**Mapas de DANE (Colombia), ABS (Australia) e INEGI (México)**
+
+[Dane](https://geoportal.dane.gov.co/geovisores/territorio/analisis-cnpv-2018/)
+
+[ABS](https://www.abs.gov.au/census/find-census-data/search-by-area)
+
+[INEGI](https://www.inegi.org.mx/app/mapa/espacioydatos/?ag=00)
+
+
+## Zoom a experiencias de APIs
+
+**API INE-España y Census Bureau**
+
+[Census Bureau](https://www.census.gov/data/developers/data-sets.html)
+
+```{r, echo=TRUE}
+# Población negra en condición de pobreza el año 2000
+library(httr)
+response <-  httr::GET("https://api.census.gov/data/timeseries/poverty/histpov2?get=PCTPOV,YEAR&for=us:*&time=2000&RACE=8")
+print(content(response)[[2]][[1]])  
+```
+
+. . .
+
+[INE España](https://www.ine.es/dyngs/DataLab/manual.html?cid=66)
+
+
+```{r, echo=TRUE}
+# Salarios promedio, según tipo de jornada y sexo
+response <-  httr::GET("https://servicios.ine.es/wstempus/js/ES/DATOS_TABLA/36832?nult=1")
+json <- content(response)
+
+```
+
+
+## Zoom Experiencias de Dashboards
+
+
+## Lago de datos
+
+¿Cómo se relaciona esto con el lago de datos?
+
+
+
+
+#
+
+
+[<img src="imagenes/logo_portada2.png" width="20%"/>]{.center}
+
+[**Revisión de iniciativas de difusión**]{.big-par .center-justified}
+
+[**Proyecto de cooperación Chile-México**]{.big-par .center-justified}
+
+[**Septiembre 2023**]{.big-par .center-justified}
+
+
+[]{.linea-superior} 
+[]{.linea-inferior} 
+
+<!---
+ ## Polar Axis  
+
+For a demonstration of a line plot on a polar axis, see @fig-polar.
+
+```{python}
+#| label: fig-polar
+#| fig-cap: "A line plot on a polar axis, not a bear"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 4 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+``` 
+--->
