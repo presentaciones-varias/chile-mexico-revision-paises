@@ -11,6 +11,7 @@ format:
     logo: imagenes/logo_portada2.png
     css: ine_quarto_styles.css
     # footer: <https://quarto.org>
+#fig-responsive: false
 execute: 
   echo: false
   message: false
@@ -59,7 +60,7 @@ library(DT)
 paises <-  read_excel("data/distribucion_paises.xlsx", sheet = "ficha")
 
 paises %>% 
-  select(pais, `nombre iniciativa` =  nombre_iniciativa) %>% 
+  select(pais, `nombre iniciativa` =  nombre_iniciativa, link) %>% 
   datatable(   rownames = FALSE,
               options = list(pageLength = 5, 
                              info = F,
@@ -67,11 +68,11 @@ paises %>%
                              dom = "rtip",
                                headerCallback = DT::JS(
     "function(thead) {",
-    "  $(thead).css('font-size', '0.7em');",
+    "  $(thead).css('font-size', '0.6em');",
     "}"
   )
                              )) %>% 
-  DT::formatStyle(columns = c(1, 2), fontSize = '60%',  backgroundSize = '2%')
+  DT::formatStyle(columns = c(1, 2, 3), fontSize = '50%',  backgroundSize = '2%')
 ```
 
 . . .
@@ -84,7 +85,8 @@ n_países <-  length(unique(paises$pais)) - 1
 n_iniciativas <- nrow(paises)
 
 tibble(`cantidad de países` = n_países, `cantidad de iniciativas` =  n_iniciativas) %>% 
-  kbl()
+  kbl() %>% 
+  kable_styling(font_size = 25)
 
 
 ```
@@ -112,12 +114,12 @@ tibble(`cantidad de países` = n_países, `cantidad de iniciativas` =  n_iniciat
 - Catálogo
 
 - Otros
-:::
 
+:::
 
 ### [gráfico]{.medium-par}
 
-```{r}
+```{r, fig.height=3, fig.width=6}
 library(ggplot2)
 library(plotly)
 plot <- paises %>% 
@@ -131,11 +133,16 @@ plot <- paises %>%
   theme_bw() +
   theme(legend.position = "none")
 
-ggplotly(plot, tooltip = c("x", "y"))
+plotly_width <- 600
+plotly_height <- 400
+
+
+ggplotly(plot, tooltip = c("x", "y"), width = plotly_width, height = plotly_height)
 
 ```
 
 :::
+
 
 ## Zoom a experiencias de mapas
 
@@ -176,6 +183,13 @@ json <- content(response)
 
 ## Zoom Experiencias de Dashboards
 
+[Francia - INSEE](https://www.insee.fr/en/outil-interactif/5543645/tableau/40_SOC/44_EGF)
+
+[Nueva Zelanda - Stats NZ](https://www.stats.govt.nz/experimental/covid-19-data-portal)
+
+[Países Bajos - Statistics Netherlands](https://www.cbs.nl/en-gb/visualisations/dashboard-population)
+
+[Costa Rica - INEC](http://sistemas.inec.cr:8080/bininec/RpWebEngine.exe/Portal?BASE=CP2011&lang=esp)
 
 ## Lago de datos
 
