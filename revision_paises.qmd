@@ -183,7 +183,7 @@ json <- content(response)
 
 ## Zoom Experiencias de Dashboards
 
-[Francia - INSEE](https://www.insee.fr/en/outil-interactif/5543645/tableau/40_SOC/44_EGF)
+[Francia - INSEE](https://www.insee.fr/en/outil-interactif/5543645)
 
 [Nueva Zelanda - Stats NZ](https://www.stats.govt.nz/experimental/covid-19-data-portal)
 
@@ -193,8 +193,11 @@ json <- content(response)
 
 ## Lago de datos
 
-¿Cómo se relaciona esto con el lago de datos?
+¿Cómo conectar una aplicación de visualización/análisis con el lago de datos?
 
+¿Qué tipo de aplicaciones de análisis y visualización de datos han montado sobre el lago de datos?
+
+Nosotros estamos desarrollando un API para acceder a datos
 
 
 
